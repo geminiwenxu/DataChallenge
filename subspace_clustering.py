@@ -10,8 +10,7 @@ from sklearn.datasets import make_checkerboard
 def prepare_data(path):
     df = pd.read_csv(path, sep=',')
     X = df.to_numpy()
-    print(type(X))
-    X = np.nan_to_num(X)
+    X = np.nan_to_num(X.astype(np.float64))
     plt.matshow(X, cmap=plt.cm.Blues, interpolation="none")
     plt.title("Original dataset")
     plt.show()
@@ -44,5 +43,5 @@ def subspace_clustering(n_cluster, X, name):
 
 
 if __name__ == '__main__':
-    X = prepare_data("/Users/wenxu/PycharmProjects/DataChallenge/data/task_3/dr_age_sub_20_40.csv")
+    X = prepare_data("/Users/wenxu/PycharmProjects/DataChallenge/data/training_A")
     subspace_clustering(3, X, 'SpectralCoclustering')
