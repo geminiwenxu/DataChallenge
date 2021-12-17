@@ -8,6 +8,7 @@ from sklearn import metrics
 from imblearn.under_sampling import ClusterCentroids
 from collections import Counter
 from imblearn.over_sampling import SMOTE
+from sklearn.tree import DecisionTreeClassifier
 
 
 def prepare_data(path):
@@ -20,12 +21,19 @@ def prepare_data(path):
 
 
 def split(X, y):
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.53, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     return X_train, X_test, y_train, y_test
 
 
 def svc(X_train, X_test, y_train):
     clf = SVC(kernel='sigmoid', degree=10, gamma='auto')
+    clf.fit(X_train, y_train)
+    y_pred = clf.predict(X_test)
+    return y_pred
+
+
+def dc(X_train, X_test, y_train):
+    clf = DecisionTreeClassifier(random_state=0)
     clf.fit(X_train, y_train)
     y_pred = clf.predict(X_test)
     return y_pred
@@ -57,18 +65,18 @@ def oversampling(X, y):
 
 
 if __name__ == '__main__':
-    path = '/Users/wenxu/PycharmProjects/DataChallenge/data/imputed_subgroup/20<mean<40.csv'
+    path = '/Users/wenxu/PycharmProjects/DataChallenge/data/age/20<Age<40.csv'
     X, y = prepare_data(path)
     X_train, X_test, y_train, y_test = split(X, y)
-    y_pred = svc(X_train, X_test, y_train)
+    y_pred = dc(X_train, X_test, y_train)
     report(y_pred, y_test)
 
     under_X_res, under_y_res = undersampling(X, y)
     X_train, X_test, y_train, y_test = split(under_X_res, under_y_res)
-    y_pred = svc(X_train, X_test, y_train)
+    y_pred = dc(X_train, X_test, y_train)
     report(y_pred, y_test)
 
     over_X_res, over_y_res = oversampling(X, y)
     X_train, X_test, y_train, y_test = split(over_X_res, over_y_res)
-    y_pred = svc(X_train, X_test, y_train)
+    y_pred = dc(X_train, X_test, y_train)
     report(y_pred, y_test)
