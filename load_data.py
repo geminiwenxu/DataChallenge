@@ -25,7 +25,7 @@ def data_ratio(counter_1, counter_2, counter_3, counter_4):
 
 
 def over_view():
-    df = pd.read_csv("//training_A", sep=',')
+    df = pd.read_csv("/Users/wenxu/PycharmProjects/DataChallenge/data/training_A", sep=',')
     features = list(df.columns)  # check nan per columns
 
     counts = []
@@ -59,7 +59,7 @@ def over_view():
     counter_3 = 0
     counter_4 = 0
     for index, row in df.iterrows():
-        if row['Age'] <20 :
+        if row['Age'] < 20:
             counter_1 += 1
         elif 20 < row['Age'] < 40:
             counter_2 += 1

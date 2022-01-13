@@ -4,6 +4,9 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import AffinityPropagation
 from sklearn import metrics
+import numpy as np
+from sklearn.metrics import accuracy_score
+
 
 
 def bench_k_means(method, name, data, labels):
@@ -59,27 +62,41 @@ def bench_k_means(method, name, data, labels):
 def quality(name, X, labels):
     if name == "KMeans":
         method = KMeans(n_clusters=3, random_state=0).fit(X)
-        bench_k_means(method, "KMeans", X, labels)
+        #bench_k_means(method, "KMeans", X, labels)
+        #contingency_matrix = metrics.cluster.contingency_matrix(X, method)
+          # return purity
+    
+    
+    #return np.sum(np.amax(contingency_matrix, axis=0)) / np.sum(contingency_matrix) 
+
+
+def purity_score(y_true, y_pred):
+    # compute contingency matrix (also called confusion matrix)
+    contingency_matrix = metrics.cluster.contingency_matrix(y_true, y_pred)
+    # return purity
+    return np.sum(np.amax(contingency_matrix, axis=1)) / np.sum(contingency_matrix) 
+
+
+
+
+
+
+
 
 
 if __name__ == "__main__":
     from sklearn.cluster import KMeans
     import pandas as pd
+    from sklearn.cluster import MeanShift
 
-    df = pd.read_csv('/data/task_3/selected_feature_20_40.csv', sep=',').fillna(0)
+    df = pd.read_csv('/Users/smile/Desktop/Task3_data/age_sub_20_40.csv', sep=',').fillna(0)
     X = df.to_numpy()
     labels = df['SepsisLabel']
-    # quality("KMeans", X, labels)
 
-    # Compute Affinity Propagation
-    af = AffinityPropagation(preference=-50, random_state=0).fit(X)
-    cluster_centers_indices = af.cluster_centers_indices_
-    labels = af.labels_
+    method = MeanShift(bandwidth=200).fit(X)
+    print(method.labels_)
+    print(labels)
+    print(purity_score(labels, method.labels_))
+    #quality("KMeans", X, labels)
 
-    n_clusters_ = len(cluster_centers_indices)
-
-    print("Estimated number of clusters: %d" % n_clusters_)
-    print(
-        "Silhouette Coefficient: %0.3f"
-        % metrics.silhouette_score(X, labels, metric="sqeuclidean")
-    )
+    
