@@ -2,6 +2,7 @@ from pyts.classification import BOSSVS
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from pyts.classification import TimeSeriesForest
+from sklearn.metrics import classification_report
 
 
 def prepare_data(path):
@@ -18,15 +19,19 @@ def split(X, y):
 
 
 if __name__ == '__main__':
-    path = '/Users/wenxu/PycharmProjects/DataChallenge/data/age/20<Age<40.csv'
+    path = '/Users/wenxu/PycharmProjects/DataChallenge/data/imputed_subgroup/40<linear<70.csv'
     X, y = prepare_data(path)
     X_train, X_test, y_train, y_test = split(X, y)
     clf = BOSSVS(window_size=28)
     clf.fit(X_train, y_train)
     score = clf.score(X_test, y_test)
     print(score)
+    y_pred = clf.predict(X_test)
+    print(classification_report(y_test, y_pred))
 
     clf = TimeSeriesForest(random_state=43)
     clf.fit(X_train, y_train)
     score = clf.score(X_test, y_test)
     print(score)
+    y_pred = clf.predict(X_test)
+    print(classification_report(y_test, y_pred))
